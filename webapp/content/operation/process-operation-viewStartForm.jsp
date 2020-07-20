@@ -11,12 +11,15 @@
     <%@include file="/common/s3.jsp"%>
 
 	<!-- bootbox -->
-    <script type="text/javascript" src="${ctx}/s/bootbox/bootbox.min.js"></script>
-	<link href="${tenantPrefix}/widgets/xform3/styles/xform.css" rel="stylesheet">
-    <script type="text/javascript" src="${tenantPrefix}/widgets/xform3/xform-all.js"></script>
+    <script type="text/javascript" src="${cdnPrefix}/bootbox/bootbox.min.js"></script>
+	<link href="${cdnPrefix}/public/mossle-xform/0.0.11/styles/xform.css" rel="stylesheet">
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-xform/0.0.11/xform-all.js"></script>
 
-    <link type="text/css" rel="stylesheet" href="../widgets/userpicker3-v2/userpicker.css">
-    <script type="text/javascript" src="../widgets/userpicker3-v2/userpicker.js"></script>
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/webuploader/0.1.5/webuploader.css">
+	<script type="text/javascript" src="${cdnPrefix}/public/webuploader/0.1.5/webuploader.js"></script>
 
 	<style type="text/css">
 .xf-handler {
@@ -55,9 +58,9 @@ $(function() {
 
 	createUserPicker({
 		multiple: true,
-		searchUrl: '${tenantPrefix}/rs/user/search',
-		treeUrl: '${tenantPrefix}/rs/party/tree?partyStructTypeId=1',
-		childUrl: '${tenantPrefix}/rs/party/searchUser'
+		searchUrl: '${tenantPrefix}/user/rs/s',
+		treeUrl: '${tenantPrefix}/party/rs/tree-data?type=struct',
+		childUrl: '${tenantPrefix}/party/rs/search-user'
 	});
 
 	setTimeout(function() {
@@ -70,7 +73,7 @@ $(function() {
 })
     </script>
 
-	<script type="text/javascript" src="${tenantPrefix}/widgets/operation/TaskOperation.js"></script>
+	<script type="text/javascript" src="${cdnPrefix}/public/mossle-operation/0.0.4/TaskOperation.js?v=20190327-01"></script>
 	<script type="text/javascript">
 ROOT_URL = '${tenantPrefix}';
 var taskOperation = new TaskOperation();
@@ -81,17 +84,10 @@ var taskOperation = new TaskOperation();
   <body>
     <%@include file="/header/bpm-workspace3.jsp"%>
 
-    <div class="row-fluid">
-	<%@include file="/menu/bpm-workspace3.jsp"%>
+    <div class="container">
 
 	<!-- start of main -->
-      <section id="m-main" class="col-md-10" style="padding-top:65px;">
-
-      <div id="xformToolbar">
-	    <c:forEach var="item" items="${buttons}">
-		<button id="${item.name}" type="button" class="btn btn-default" onclick="taskOperation.${item.name}()">${item.label}</button>
-		</c:forEach>
-      </div>
+      <section id="m-main" class="col-md-12" style="padding-top:65px;">
 
       <form id="xform" method="post" action="${tenantPrefix}/operation/process-operation-startProcessInstance.do" class="xf-form" enctype="multipart/form-data">
 <input id="processDefinitionId" type="hidden" name="processDefinitionId" value="${formDto.processDefinitionId}">
@@ -102,20 +98,13 @@ var taskOperation = new TaskOperation();
 <input id="taskId" type="hidden" name="taskId" value="${taskId}">
 -->
 		<div id="xf-form-table"></div>
+
+
+
 		<br>
-		<div id="nextStep">
-		</div>
-		  <script>
-		  $.getJSON('${tenantPrefix}/rs/bpm/next', {
-			  processDefinitionId: '${formDto.processDefinitionId}',
-			  activityId: '${formDto.activityId}'
-		  }, function(data) {
-			  $('#nextStep').append('下个环节：');
-			  for (var i = 0; i < data.length; i++) {
-				  $('#nextStep').append(data[i].name);
-			  }
-		  });
-		  </script>
+		<br>
+		<br>
+		<br>
 	  </form>
 
     </section>
@@ -124,6 +113,20 @@ var taskOperation = new TaskOperation();
     <form id="f" action="form-template-save.do" method="post" style="display:none;">
 	  <textarea id="__gef_content__" name="content">${xform.content}</textarea>
 	</form>
+
+
+<div class="navbar navbar-default navbar-fixed-bottom">
+  <div class="container-fluid">
+    <div class="text-center" style="padding-top:8px;">
+
+	    <c:forEach var="item" items="${buttons}">
+		<button id="${item.name}" type="button" class="btn btn-default" onclick="taskOperation.${item.name}()">${item.label}</button>
+		</c:forEach>
+	
+	</div>
+  </div>
+</div>
+
 
   </body>
 

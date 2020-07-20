@@ -19,8 +19,52 @@ $(function() {
         },
         errorClass: 'validate-error'
     });
+
+<c:if test="${model.manual != 1}">
+	var editor = CKEDITOR.replace('mailTemplate_content');
+</c:if>
 })
     </script>
+	<script src="${cdnPrefix}/public/jquery-file-upload/5.42.0/js/vendor/jquery.ui.widget.js"></script>
+	<script src="${cdnPrefix}/public/jquery-file-upload/5.42.0/js/jquery.iframe-transport.js"></script>
+	<script src="${cdnPrefix}/public/jquery-file-upload/5.42.0/js/jquery.fileupload.js"></script>
+	<script>
+/*jslint unparam: true */
+/*global window, $ */
+$(function () {
+    'use strict';
+    // Change this to the location of your server-side upload handler:
+    var url = 'sendmail-attachment-upload.do';
+    $('#fileupload').fileupload({
+        url: url,
+        dataType: 'json',
+        done: function (e, data) {
+			var file = data.result;
+			$('#files').append('<span class="badge">'
+				+ '<input type="hidden" name="attachmentIds" value="' + file.id + '">'
+				+ '<a href="sendmail-attachment-download.do?id=' + file.id + '" style="color:white;">' + file.name + '</a>'
+				+ '<i title="' + file.id + '" class="glyphicon glyphicon-remove" style="cursor:pointer;"></i></span>');
+        },
+        progressall: function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+            $('#progress .bar').css(
+                'width',
+                progress + '%'
+            );
+        }
+    });
+
+	$(document).delegate('.glyphicon-remove', 'click', function() {
+		var el = $(this);
+		var url = 'sendmail-attachment-removeById.do?id=' + el.attr('title');
+		$.getJSON(url, function(data) {
+			var tr = el.parent();
+			tr.remove();
+		});
+	});
+
+});
+</script>
   </head>
 
   <body>
@@ -47,51 +91,51 @@ $(function() {
   </c:if>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailTemplate_name">名称</label>
-	<div class="col-sm-5">
-	  <input id="mailTemplate_name" type="text" name="name" value="${model.name}" class="required" minlength="2" maxlength="50">
+	<div class="col-md-11">
+	  <input id="mailTemplate_name" type="text" name="name" value="${model.name}" class="form-control required" minlength="2" maxlength="50">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailTemplate_sender">发件人</label>
-	<div class="col-sm-5">
-	  <input id="mailTemplate_sender" type="text" name="sender" value="${model.sender}" maxlength="50">
+	<div class="col-md-11">
+	  <input id="mailTemplate_sender" type="text" name="sender" value="${model.sender}" maxlength="50" class="form-control">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailTemplate_receiver">收件人</label>
-	<div class="col-sm-5">
-	  <textarea id="mailTemplate_receiver" name="receiver" maxlength="200">${model.receiver}</textarea>
+	<div class="col-md-11">
+	  <textarea id="mailTemplate_receiver" name="receiver" maxlength="200" class="form-control">${model.receiver}</textarea>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailTemplate_cc">抄送</label>
-	<div class="col-sm-5">
-	  <textarea id="mailTemplate_cc" name="cc" maxlength="200">${model.cc}</textarea>
+	<div class="col-md-11">
+	  <textarea id="mailTemplate_cc" name="cc" maxlength="200" class="form-control">${model.cc}</textarea>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailTemplate_bcc">暗送</label>
-	<div class="col-sm-5">
-	  <textarea id="mailTemplate_bcc" name="bcc" maxlength="200">${model.bcc}</textarea>
+	<div class="col-md-11">
+	  <textarea id="mailTemplate_bcc" name="bcc" maxlength="200" class="form-control">${model.bcc}</textarea>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailTemplate_subject">标题</label>
-	<div class="col-sm-5">
-	  <input id="mailTemplate_subject" type="text" name="subject" value="${model.subject}" class="required" minlength="1" maxlength="50">
+	<div class="col-md-11">
+	  <input id="mailTemplate_subject" type="text" name="subject" value="${model.subject}" class="form-control required" minlength="1" maxlength="50">
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailTemplate_content">内容</label>
-	<div class="col-sm-5">
-	  <textarea id="mailTemplate_content" name="content" class="required" minlength="1" maxlength="65535">${model.content}</textarea>
+	<div class="col-md-11">
+	  <textarea id="mailTemplate_content" name="content" class="form-control required" minlength="1" maxlength="65535">${model.content}</textarea>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailTemplate_attachment">附件</label>
-	<div class="col-sm-5">
+	<div class="col-md-11">
       <!-- The fileinput-button span is used to style the file input field as button -->
-	  <span class="btn btn-success fileinput-button">
+	  <span class="btn btn-default btn-success fileinput-button">
 	    <i class="glyphicon glyphicon-plus"></i>
 		<span>选择文件</span>
 		<!-- The file input field used as target for the file upload widget -->
@@ -117,16 +161,22 @@ $(function() {
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="mailTemplate_manual0">不使用ckeditor</label>
-	<div class="col-sm-5">
-	  <label><input id="mailTemplate_manual0" type="radio" name="manual" value="1" ${model.manual == 1 ? 'checked' : ''}>手工</label>
-	  <label><input id="mailTemplate_manual0" type="radio" name="manual" value="0" ${empty model.manual || model.manual == 0 ? 'checked' : ''}>ckeditor</label>
+	<div class="col-md-11">
+	  <label class="radio-inline">
+	    <input id="mailTemplate_manual0" type="radio" name="manual" value="1" ${model.manual == 1 ? 'checked' : ''}>
+		手工
+	  </label>
+	  <label class="radio-inline">
+	    <input id="mailTemplate_manual0" type="radio" name="manual" value="0" ${empty model.manual || model.manual == 0 ? 'checked' : ''}>
+		ckeditor
+	  </label>
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-md-11 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

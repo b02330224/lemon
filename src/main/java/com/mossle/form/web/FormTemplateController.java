@@ -10,9 +10,9 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.core.auth.CurrentUserHolder;
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
@@ -175,6 +175,16 @@ public class FormTemplateController {
         formTemplateManager.save(targetFormTemplate);
 
         return "redirect:/form/form-template-list.do";
+    }
+
+    @RequestMapping("form-template-preview")
+    public String preview(@RequestParam("id") Long id, Model model)
+            throws Exception {
+        String tenantId = tenantHolder.getTenantId();
+        FormTemplate formTemplate = this.formTemplateManager.get(id);
+        model.addAttribute("formTemplate", formTemplate);
+
+        return "form/form-template-preview";
     }
 
     // ~ ======================================================================

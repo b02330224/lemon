@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.mossle.api.tenant.TenantHolder;
 
-import com.mossle.core.auth.CurrentUserHolder;
+import com.mossle.api.auth.CurrentUserHolder;
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
 import com.mossle.core.mapper.BeanMapper;
@@ -80,6 +80,7 @@ public class PimRemindController {
             dest = pimRemind;
             dest.setUserId(userId);
             dest.setCreateTime(new Date());
+            dest.setStatus("active");
         }
 
         pimRemindManager.save(dest);

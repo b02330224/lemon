@@ -48,6 +48,8 @@ public class SpringSecurityUtils {
 
     /**
      * 取得当前用户的登录名, 如果当前用户未登录则返回空字符串.
+     * 
+     * @return String
      */
     public static String getCurrentUsername() {
         Authentication authentication = getAuthentication();
@@ -61,6 +63,8 @@ public class SpringSecurityUtils {
 
     /**
      * 取得当前用户的id，如果当前用户与未登录，则返回null.
+     * 
+     * @return String
      */
     public static String getCurrentUserId() {
         SpringSecurityUserAuth springSecurityUserAuth = getCurrentUser();
@@ -74,6 +78,8 @@ public class SpringSecurityUtils {
 
     /**
      * 取得当前用户登录IP, 如果当前用户未登录则返回空字符串.
+     * 
+     * @return String
      */
     public static String getCurrentUserIp() {
         Authentication authentication = getAuthentication();
@@ -129,6 +135,8 @@ public class SpringSecurityUtils {
 
     /**
      * 取得Authentication, 如当前SecurityContext为空时返回null.
+     * 
+     * @return Authentication
      */
     public static Authentication getAuthentication() {
         SecurityContext context = SecurityContextHolder.getContext();
@@ -239,6 +247,10 @@ public class SpringSecurityUtils {
     // ~ ======================================================================
     /**
      * 判断用户是否拥有角色, 如果用户拥有参数中的任意一个角色则返回true.
+     * 
+     * @param roles
+     *            roles
+     * @return boolean
      */
     public static boolean hasRole(String... roles) {
         if (roles == null) {
@@ -347,6 +359,10 @@ public class SpringSecurityUtils {
 
     /**
      * 取得当前用户的id，如果当前用户与未登录，则返回null.
+     * 
+     * @param securityContext
+     *            context
+     * @return SpringSecurityUserAuth
      */
     public static SpringSecurityUserAuth getCurrentUser(
             SecurityContext securityContext) {

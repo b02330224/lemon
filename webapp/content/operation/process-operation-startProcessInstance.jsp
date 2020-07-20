@@ -14,19 +14,21 @@
   <body>
     <%@include file="/header/bpm-workspace3.jsp"%>
 
-    <div class="row-fluid">
-	<%@include file="/menu/bpm-workspace3.jsp"%>
+    <div class="container">
 
 	<!-- start of main -->
-      <section id="m-main" class="col-md-10" style="margin-top:65px;">
-	 
-	  <div class="alert alert-info" role="alert">
-		<button type="button" class="close" data-dismiss="alert" style="margin-right:30px;">×</button>
-		<strong>流程已发起</strong>
-	  </div>
+      <section id="m-main" class="col-md-12" style="padding-top:65px;">
 
-    </section>
+	    <div class="alert alert-info" role="alert">
+		  <button type="button" class="close" data-dismiss="alert" style="margin-right:30px;">×</button>
+		  <strong>流程已发起</strong>
+	    </div>
+
+	    <a href="${ctx}/bpm/workspace-listRunningProcessInstances.do">返回</a>
+
+      </section>
 	<!-- end of main -->
+
 	</div>
 
   </body>

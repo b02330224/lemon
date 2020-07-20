@@ -9,6 +9,7 @@ import javax.annotation.Resource;
 import com.mossle.api.user.UserConnector;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.BaseEntityEventListener;
 import org.activiti.engine.delegate.event.impl.ActivitiEntityEventImpl;
 import org.activiti.engine.impl.cmd.GetDeploymentProcessDefinitionCmd;
@@ -35,6 +36,12 @@ public class UpdateProcessInstanceNameEventListener extends
             return;
         }
 
+        ActivitiEventType activitiEventType = activitiEntityEventImpl.getType();
+
+        if (activitiEventType != ActivitiEventType.ENTITY_INITIALIZED) {
+            return;
+        }
+
         ExecutionEntity executionEntity = (ExecutionEntity) entity;
 
         if (!executionEntity.isProcessInstanceType()) {
@@ -49,6 +56,11 @@ public class UpdateProcessInstanceNameEventListener extends
 
         // {流程标题:title}-{发起人:startUser}-{发起时间:startTime}
         String processDefinitionName = processDefinition.getName();
+
+        if (processDefinitionName == null) {
+            processDefinitionName = processDefinition.getKey();
+        }
+
         String userId = Authentication.getAuthenticatedUserId();
         String displayName = userConnector.findById(userId).getDisplayName();
         String processInstanceName = processDefinitionName + "-" + displayName

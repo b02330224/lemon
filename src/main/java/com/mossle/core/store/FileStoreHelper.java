@@ -101,6 +101,11 @@ public class FileStoreHelper implements StoreHelper {
         dir.mkdirs();
 
         File targetFile = new File(baseDir + "/" + model + "/" + path);
+
+        if (!targetFile.getParentFile().exists()) {
+            targetFile.getParentFile().mkdirs();
+        }
+
         FileOutputStream fos = new FileOutputStream(targetFile);
 
         try {
@@ -116,6 +121,12 @@ public class FileStoreHelper implements StoreHelper {
         storeResult.setDataSource(new FileDataSource(targetFile));
 
         return storeResult;
+    }
+
+    public void mkdir(String path) {
+        File dir = new File(baseDir + "/" + path);
+        boolean result = dir.mkdirs();
+        logger.info("mkdir : {}", result);
     }
 
     public String getSuffix(String name) {

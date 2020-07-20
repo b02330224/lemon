@@ -110,7 +110,7 @@ public class SyncProcessCmd implements Command<Void> {
 
         if (bpmConfNode == null) {
             bpmConfNode = new BpmConfNode();
-            bpmConfNode.setCode(process.getId());
+            bpmConfNode.setCode("");
             bpmConfNode.setName("全局");
             bpmConfNode.setType("process");
             bpmConfNode.setConfUser(2);
@@ -318,6 +318,7 @@ public class SyncProcessCmd implements Command<Void> {
                 bpmConfListener = new BpmConfListener();
                 bpmConfListener.setValue(value);
                 bpmConfListener.setType(type);
+                bpmConfListener.setBpmConfNode(bpmConfNode);
                 bpmConfListenerManager.save(bpmConfListener);
             }
         }

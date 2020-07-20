@@ -9,6 +9,7 @@
     <%@include file="/common/meta.jsp"%>
     <title>编辑</title>
     <%@include file="/common/s3.jsp"%>
+	<script type="text/javascript" src="${cdnPrefix}/ckeditor/ckeditor.js"></script>
     <script type="text/javascript">
 $(function() {
     $("#cms-articleForm").validate({
@@ -19,6 +20,9 @@ $(function() {
         },
         errorClass: 'validate-error'
     });
+	var editor = CKEDITOR.replace('cmsArticle_content');
+	// editorObj.config.filebrowserImageUploadUrl = dir + "core/connector/" + ckfinder.ConnectorLanguage + "/connector." + ckfinder.ConnectorLanguage + "?command=QuickUpload&type=" + ( imageType || 'Images' ) ;
+	editor.config.filebrowserImageUploadUrl = "${tenantPrefix}/cms/cms-article-uploadImage.do";
 })
     </script>
   </head>
@@ -47,17 +51,32 @@ $(function() {
   </c:if>
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">栏目</label>
-	<div class="col-sm-5">
-      <select id="perm_resc" name="cmsCatalogId" class="form-control">
-	    <c:forEach items="${cmsCatalogs}" var="item">
-	    <option value="${item.id}" ${model.cmsCatalog.id==item.id ? 'selected' : ''}>${item.name}</option>
-		</c:forEach>
-	  </select>
+	<div class="col-md-11">
+	  <c:if test="${empty model}">
+	    <c:if test="${not empty param.catalogId}">
+		  <input type="hidden" name="cmsCatalogId" value="${cmsCatalog.id}">
+		  <p class="form-control-static">${cmsCatalog.name}</p>
+		</c:if>
+	    <c:if test="${empty param.catalogId}">
+        <select id="perm_resc" name="cmsCatalogId" class="form-control">
+	      <c:forEach items="${cmsCatalogs}" var="item">
+	      <option value="${item.id}" ${model.cmsCatalog.id==item.id ? 'selected' : ''}>${item.name}</option>
+		  </c:forEach>
+	    </select>
+		</c:if>
+	  </c:if>
+	  <c:if test="${not empty model}">
+        <select id="perm_resc" name="cmsCatalogId" class="form-control">
+	      <c:forEach items="${cmsCatalogs}" var="item">
+	      <option value="${item.id}" ${model.cmsCatalog.id==item.id ? 'selected' : ''}>${item.name}</option>
+		  </c:forEach>
+	    </select>
+	  </c:if>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">标题</label>
-	<div class="col-sm-5">
+	<div class="col-md-11">
 	  <input id="cms-article_cmsArticlename" type="text" name="title" value="${model.title}" size="40" class="form-control required" minlength="2" maxlength="50">
     </div>
   </div>
@@ -77,23 +96,26 @@ $(function() {
 -->
   <div class="form-group">
     <label class="control-label col-md-1" for="cmsArticle_summary">摘要</label>
-	<div class="col-sm-5">
+	<div class="col-md-11">
 	  <textarea id="cmsArticle_summary" name="summary" maxlength="200" class="form-control">${model.summary}</textarea>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">内容</label>
-	<div class="col-sm-5">
+	<div class="col-md-11">
 	  <textarea id="cmsArticle_content" name="content" class="form-control required" minlength="2" maxlength="50">${model.content}</textarea>
     </div>
   </div>
-<!--
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">图标</label>
-	<div class="col-sm-5">
-	  <input id="cms-article_cmsArticlename" type="text" name="logo" value="${model.logo}" size="40" class="text" minlength="2" maxlength="50">
+	<div class="col-md-11">
+	  <input id="cmsArticle_logo" type="file" name="logoFile" value="" class="form-control-static">
+	  <c:if test="${not empty model.logo}">
+	    <img src="file/download.do?path=${model.logo}" width="80">
+	  </c:if>
     </div>
   </div>
+  <!--
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">关键字</label>
 	<div class="col-sm-5">
@@ -106,12 +128,14 @@ $(function() {
 	  <input id="cms-article_cmsArticlename" type="text" name="tags" value="${model.tags}" size="40" class="text" minlength="2" maxlength="50">
     </div>
   </div>
+  -->
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">来源</label>
-	<div class="col-sm-5">
-	  <input id="cms-article_cmsArticlename" type="text" name="source" value="${model.source}" size="40" class="text" minlength="2" maxlength="50">
+	  <div class="col-md-5">
+	    <input id="cms-article_cmsArticlename" type="text" name="source" value="${model.source}" size="40" class="form-control" minlength="2" maxlength="50">
     </div>
   </div>
+  <!--
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">允许评论</label>
 	<div class="col-sm-5">
@@ -125,17 +149,19 @@ $(function() {
     </div>
   </div>
 -->
+  <div class="form-group">
+    <label class="control-label col-md-1" for="cms-article_cmsArticlename">发布时间</label>
+	  <div class="input-group date datetimepicker col-md-5" style="padding-left:15px;padding-right:15px;">
+	    <input id="cal-info_startTime" name="publishTime" size="16" type="text" value="<fmt:formatDate value='${model.publishTime}' pattern='yyyy-MM-dd HH:mm'/>" readonly style="background-color:white;cursor:default;" class="form-control required">
+      <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+      <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
+    </div>
+  </div>
 <!--
   <div class="form-group">
     <label class="control-label col-md-1" for="cms-article_cmsArticlename">创建时间</label>
 	<div class="col-sm-5">
 	  <input id="cms-article_cmsArticlename" type="text" name="createTime" value="${model.createTime}" class="text">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="control-label col-md-1" for="cms-article_cmsArticlename">发布时间</label>
-	<div class="col-sm-5">
-	  <input id="cms-article_cmsArticlename" type="text" name="publishTime" value="${model.publishTime}" class="text">
     </div>
   </div>
   <div class="form-group">
@@ -168,12 +194,12 @@ $(function() {
 
   <div class="form-group">
     <label class="control-label col-md-1" for="cmsArticle_file">附件</label>
-	<div class="col-sm-5">
-	  <input id="cmsArticle_file" type="file" name="file" value="" class="">
+	<div class="col-md-11">
+	  <input id="cmsArticle_file" type="file" name="file" value="" class="form-control-static">
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
+    <div class="col-md-10 col-md-offset-1">
       <button id="submitButton" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
       <button type="button" onclick="history.back();" class="btn btn-link a-cancel"><spring:message code='core.input.back' text='返回'/></button>
     </div>

@@ -25,4 +25,12 @@
 	<!-- 附件 -->
 	<bean id="attachmentConnector" class="com.mossle.spi.attachment.LocalAttachmentConnector"/>
 
+	<!-- 流水号 -->
+	<bean id="sequenceConnector" class="${sequence.connector}"/>
+
+	<!-- 员工 -->
+	<bean id="employeeConnector" class="com.mossle.party.support.PartyEmployeeConnector"/>
+
+	<bean id="modelConnector" class="com.mossle.model.support.ModelConnectorImpl" />
+
 </beans>

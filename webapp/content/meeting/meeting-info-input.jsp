@@ -21,6 +21,20 @@ $(function() {
     });
 })
     </script>
+
+    <link type="text/css" rel="stylesheet" href="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.css">
+    <script type="text/javascript" src="${cdnPrefix}/public/mossle-userpicker/3.0/userpicker.js"></script>
+	<script type="text/javascript">
+$(function() {
+	createUserPicker({
+		modalId: 'userPicker',
+		showExpression: true,
+		searchUrl: '${tenantPrefix}/rs/user/search',
+		treeUrl: '${tenantPrefix}/rs/party/tree?partyStructTypeId=1',
+		childUrl: '${tenantPrefix}/rs/party/searchUser'
+	});
+})
+    </script>
   </head>
 
   <body>
@@ -52,27 +66,25 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-1" for="cal-info_startTIme">开始时间</label>
-	<div class="col-sm-5">
-      <div class="input-append datetimepicker date" style="padding-left: 0px;">
-	    <input id="cal-info_startTIme" type="text" name="startTime" value="<fmt:formatDate value='${model.startTime}' pattern='yyyy-MM-dd HH:mm'/>" size="40" class="form-control required" readonly style="background-color:white;cursor:default; width: 175px;">
-	    <span class="add-on" style="padding-top: 2px; padding-bottom: 2px;"><i class="icon-calendar"></i></span>
-	  </div>
+    <label class="control-label col-md-1" for="cal-info_startTime">开始时间</label>
+	<div class="input-group date datetimepicker col-md-5" style="padding-left:15px;padding-right:15px;">
+	  <input id="cal-info_startTime" name="startTime" size="16" type="text" value="<fmt:formatDate value='${model.startTime}' pattern='yyyy-MM-dd HH:mm'/>" readonly style="background-color:white;cursor:default;" class="form-control required">
+      <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+      <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
     </div>
   </div>
   <div class="form-group">
     <label class="control-label col-md-1" for="cal-info_endTime">结束时间</label>
-	<div class="col-sm-5">
-      <div class="input-append datetimepicker date" style="padding-left: 0px;">
-	    <input id="cal-info_endTime" type="text" name="endTime" value="<fmt:formatDate value='${model.endTime}' pattern='yyyy-MM-dd HH:mm'/>" size="40" class="form-control required" readonly style="background-color:white;cursor:default; width: 175px;">
-	    <span class="add-on" style="padding-top: 2px; padding-bottom: 2px;"><i class="icon-calendar"></i></span>
-	  </div>
+	<div class="input-group date datetimepicker col-md-5" style="padding-left:15px;padding-right:15px;">
+	  <input id="cal-info_endTime" name="endTime" size="16" type="text" value="<fmt:formatDate value='${model.endTime}' pattern='yyyy-MM-dd HH:mm'/>" readonly style="background-color:white;cursor:default;" class="form-control required">
+      <span class="input-group-addon"><span class="glyphicon glyphicon-remove"></span></span>
+      <span class="input-group-addon"><span class="glyphicon glyphicon-th"></span></span>
     </div>
   </div>
   <div class="form-group">
 	<label class="control-label col-md-1" for="perm_resc">会议室</label>
     <div class="col-sm-5">
-      <select id="perm_resc" name="meetingRoomId">
+      <select id="perm_resc" name="meetingRoomId" class="form-control">
 	    <c:forEach items="${meetingRooms}" var="item">
 	    <option value="${item.id}" ${model.meetingRoom.id==item.id ? 'selected' : ''}>${item.name}</option>
 		</c:forEach>
@@ -82,11 +94,11 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="meetingInfo_organizer">发起人</label>
 	<div class="col-sm-5">
-	  <div class="input-append userPicker">
-	    <input id="_task_name_key" type="hidden" name="organizer" class="input-medium" value="${model.organizer}">
-	    <input type="text" name="organizerName" style="width: 175px;" value="${organizerName}">
-	    <span class="add-on"><i class="icon-user"></i></span>
-	  </div>
+		<div class="input-group userPicker" style="display:block-inline;">
+		  <input id="_task_name_key" type="hidden" name="organizer" class="input-medium" value="">
+		  <input type="text" name="taskAssigneeNames" style="background-color:white;" value="" class="form-control" readonly>
+		  <div class="input-group-addon"><i class="glyphicon glyphicon-user"></i></div>
+		</div>
     </div>
   </div>
   <div class="form-group">
@@ -98,13 +110,13 @@ $(function() {
   <div class="form-group">
     <label class="control-label col-md-1" for="meetingInfo_items">配套资源</label>
 	<div class="col-sm-5">
-	  <label>
+	  <label class="checkbox-inline">
 	    <input id="meetingInfo_items0" type="checkbox" name="items" value="polycom" <tags:contains items="${items}" item="polycom">checked</tags:contains>>
 		八爪鱼
 	  </label>
-	  <label>
-	    <input id="meetingInfo_items1" type="checkbox" name="items" value="ipphone" <tags:contains items="${items}" item="ipphone">checked</tags:contains>>
-		IP电话
+	  <label class="checkbox-inline">
+	    <input id="meetingInfo_items1" type="checkbox" name="items" value="projector" <tags:contains items="${items}" item="projector">checked</tags:contains>>
+		投影仪
 	  </label>
     </div>
   </div>
@@ -115,10 +127,10 @@ $(function() {
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <div class="col-sm-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>

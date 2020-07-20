@@ -2,8 +2,10 @@ package com.mossle.party.rs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -14,8 +16,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import com.mossle.api.user.UserConnector;
+import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserDTO;
+
+import com.mossle.client.user.UserClient;
 
 import com.mossle.party.persistence.domain.PartyEntity;
 import com.mossle.party.persistence.domain.PartyStruct;
@@ -38,7 +42,8 @@ public class PartyResource {
     private PartyEntityManager partyEntityManager;
     private PartyStructManager partyStructManager;
     private PartyService partyService;
-    private UserConnector userConnector;
+    private UserClient userClient;
+    private TenantHolder tenantHolder;
 
     @GET
     @Path("types")
@@ -87,6 +92,28 @@ public class PartyResource {
             partyEntityDto.setRef(partyEntity.getRef());
             partyEntityDtos.add(partyEntityDto);
         }
+
+        PartyType partyType = partyTypeManager.get(typeId);
+
+        if (partyType.getType() != 2) {
+            return partyEntityDtos;
+        }
+
+        // 如果是岗位，按名称去重
+        Set<String> names = new HashSet<String>();
+        List<PartyEntityDTO> list = new ArrayList<PartyEntityDTO>();
+
+        for (PartyEntityDTO partyEntityDto : partyEntityDtos) {
+            if (names.contains(partyEntityDto.getName())) {
+                list.add(partyEntityDto);
+
+                continue;
+            }
+
+            names.add(partyEntityDto.getName());
+        }
+
+        partyEntityDtos.removeAll(list);
 
         return partyEntityDtos;
     }
@@ -189,10 +216,12 @@ public class PartyResource {
                 .find(hql, parentId);
 
         List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        String tenantId = tenantHolder.getTenantId();
 
         for (PartyEntity partyEntity : partyEntities) {
             Map<String, String> map = new HashMap<String, String>();
-            UserDTO userDto = userConnector.findById(partyEntity.getRef());
+            UserDTO userDto = userClient.findById(partyEntity.getRef(),
+                    tenantId);
             map.put("id", userDto.getId());
             map.put("username", userDto.getUsername());
             map.put("displayName", userDto.getDisplayName());
@@ -224,8 +253,13 @@ public class PartyResource {
     }
 
     @Resource
-    public void setUserConnector(UserConnector userConnector) {
-        this.userConnector = userConnector;
+    public void setUserClient(UserClient userClient) {
+        this.userClient = userClient;
+    }
+
+    @Resource
+    public void setTenantHolder(TenantHolder tenantHolder) {
+        this.tenantHolder = tenantHolder;
     }
 
     // ~ ==================================================

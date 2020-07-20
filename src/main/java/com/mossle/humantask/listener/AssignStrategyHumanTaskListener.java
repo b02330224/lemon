@@ -2,6 +2,7 @@ package com.mossle.humantask.listener;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -12,6 +13,7 @@ import com.mossle.humantask.persistence.domain.TaskParticipant;
 import com.mossle.humantask.persistence.manager.TaskInfoManager;
 
 import com.mossle.spi.humantask.TaskDefinitionConnector;
+import com.mossle.spi.humantask.TaskUserDTO;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,8 @@ public class AssignStrategyHumanTaskListener implements HumanTaskListener {
             return;
         }
 
+        List<TaskParticipant> taskParticipants = new ArrayList<TaskParticipant>();
+
         String taskDefinitionKey = taskInfo.getCode();
         logger.debug("taskDefinitionKey : {}", taskDefinitionKey);
 
@@ -37,6 +41,26 @@ public class AssignStrategyHumanTaskListener implements HumanTaskListener {
                 taskDefinitionKey, processDefinitionId);
         logger.debug("strategy : {}", strategy);
 
+        List<TaskUserDTO> taskUsers = taskDefinitionConnector.findTaskUsers(
+                taskDefinitionKey, processDefinitionId);
+
+        for (TaskUserDTO taskUser : taskUsers) {
+            String catalog = taskUser.getCatalog();
+            String type = taskUser.getType();
+            String value = taskUser.getValue();
+
+            if ("assignee".equals(catalog)) {
+                taskInfo.setAssignee(value);
+            } else if ("candidate".equals(catalog)) {
+                TaskParticipant taskParticipant = new TaskParticipant();
+                taskParticipant.setCategory(catalog);
+                taskParticipant.setRef(value);
+                taskParticipant.setType(type);
+                taskParticipant.setTaskInfo(taskInfo);
+                taskParticipants.add(taskParticipant);
+            }
+        }
+
         if (strategy == null) {
             return;
         }
@@ -46,39 +70,36 @@ public class AssignStrategyHumanTaskListener implements HumanTaskListener {
         }
 
         if ("当只有一人时采用独占策略".equals(strategy)) {
-            List<String> candidateUsers = this.findCandidateUsers(taskInfo);
-
-            if (candidateUsers.size() != 1) {
-                logger.info("candidateUsers size is {}", candidateUsers.size());
+            if (taskParticipants.size() != 1) {
+                logger.info("candidateUsers size is {}",
+                        taskParticipants.size());
 
                 return;
             }
 
-            String userId = candidateUsers.get(0);
+            String userId = taskParticipants.get(0).getId().toString();
 
             logger.info("assign : {}", userId);
             taskInfo.setAssignee(userId);
         } else if ("资源中任务最少者".equals(strategy)) {
-            List<String> candidateUsers = this.findCandidateUsers(taskInfo);
-
-            if (candidateUsers.isEmpty()) {
+            if (taskParticipants.isEmpty()) {
                 logger.info("candidateUsers is empty");
 
                 return;
             }
 
-            String userId = candidateUsers.get(0);
+            String userId = taskParticipants.get(0).getRef();
             int taskCount = 0;
 
-            for (String candidateUser : candidateUsers) {
+            for (TaskParticipant candidateUser : taskParticipants) {
                 int currentTaskCount = taskInfoManager
                         .getCount(
                                 "select count(*) from TaskInfo where assignee=? and status='active'",
-                                candidateUser);
+                                candidateUser.getRef());
 
                 if ((taskCount == 0) || (currentTaskCount < taskCount)) {
                     taskCount = currentTaskCount;
-                    userId = candidateUser;
+                    userId = candidateUser.getRef();
                 }
             }
 
@@ -87,17 +108,15 @@ public class AssignStrategyHumanTaskListener implements HumanTaskListener {
             logger.info("assign : {}", userId);
             taskInfo.setAssignee(userId);
         } else if ("资源中随机分配".equals(strategy)) {
-            List<String> candidateUsers = this.findCandidateUsers(taskInfo);
-
-            if (candidateUsers.isEmpty()) {
+            if (taskParticipants.isEmpty()) {
                 logger.info("candidateUsers is empty");
 
                 return;
             }
 
-            Collections.shuffle(candidateUsers);
+            Collections.shuffle(taskParticipants);
 
-            String userId = candidateUsers.get(0);
+            String userId = taskParticipants.get(0).getRef();
 
             logger.info("assign : {}", userId);
             taskInfo.setAssignee(userId);

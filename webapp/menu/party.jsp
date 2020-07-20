@@ -47,18 +47,18 @@
     <div class="panel-heading" role="tab" id="collapse-header-party" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-party" aria-expanded="true" aria-controls="collapse-body-party">
       <h4 class="panel-title">
 	    <i class="glyphicon glyphicon-list"></i>
-        组织机构管理
+        组织结构管理
       </h4>
     </div>
     <div id="collapse-body-party" class="panel-collapse collapse ${currentMenu == 'party' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-party">
       <div class="panel-body">
         <ul class="nav nav-list">
-		  <li><a href="${tenantPrefix}/party/tree-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.tree" text="组织机构图"/></a></li>
-		  <li><a href="${tenantPrefix}/party/party-entity-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.org" text="组织机构"/></a></li>
-		  <li><a href="${tenantPrefix}/party/party-struct-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.struct" text="组织机构结构"/></a></li>
-		  <li><a href="${tenantPrefix}/party/party-type-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.type" text="组织机构类型"/></a></li>
-		  <li><a href="${tenantPrefix}/party/party-struct-type-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.struct.type" text="组织机构结构类型"/></a></li>
-		  <li><a href="${tenantPrefix}/party/party-struct-rule-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.struct.rule" text="组织机构结构规则"/></a></li>
+		  <li><a href="${tenantPrefix}/party/tree-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.tree" text="组织结构图"/></a></li>
+		  <li><a href="${tenantPrefix}/party/party-entity-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.org" text="组织结构"/></a></li>
+		  <li><a href="${tenantPrefix}/party/party-struct-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.struct" text="组织结构结构"/></a></li>
+		  <li><a href="${tenantPrefix}/party/party-type-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.type" text="组织结构类型"/></a></li>
+		  <li><a href="${tenantPrefix}/party/party-struct-type-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.struct.type" text="组织结构结构类型"/></a></li>
+		  <li><a href="${tenantPrefix}/party/party-struct-rule-list.do"><i class="glyphicon glyphicon-list"></i> <spring:message code="layout.leftmenu.struct.rule" text="组织结构结构规则"/></a></li>
         </ul>
       </div>
     </div>
@@ -99,25 +99,7 @@
       </div>
     </div>
   </div>
-
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="collapse-header-sendsms" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-sendsms" aria-expanded="true" aria-controls="collapse-body-sendsms">
-      <h4 class="panel-title">
-	    <i class="glyphicon glyphicon-list"></i>
-        发送短信
-      </h4>
-    </div>
-    <div id="collapse-body-sendsms" class="panel-collapse collapse ${currentMenu == 'sendsms' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-sendsms">
-      <div class="panel-body">
-        <ul class="nav nav-list">
-		  <li><a href="${tenantPrefix}/sendsms/sendsms-config-list.do"><i class="glyphicon glyphicon-list"></i> 短信配置</a></li>
-		  <li><a href="${tenantPrefix}/sendsms/sendsms-queue-list.do"><i class="glyphicon glyphicon-list"></i> 短信队列</a></li>
-		  <li><a href="${tenantPrefix}/sendsms/sendsms-history-list.do"><i class="glyphicon glyphicon-list"></i> 短信历史</a></li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
+<!--
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="collapse-header-audit" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-audit" aria-expanded="true" aria-controls="collapse-body-audit">
       <h4 class="panel-title">
@@ -133,7 +115,7 @@
       </div>
     </div>
   </div>
-
+-->
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="collapse-header-store" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-store" aria-expanded="true" aria-controls="collapse-body-store">
       <h4 class="panel-title">
@@ -149,7 +131,7 @@
       </div>
     </div>
   </div>
-
+<!--
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="collapse-header-whitelist" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-whitelist" aria-expanded="true" aria-controls="collapse-body-whitelist">
       <h4 class="panel-title">
@@ -165,7 +147,7 @@
       </div>
     </div>
   </div>
-
+-->
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="collapse-header-dict" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-dict" aria-expanded="true" aria-controls="collapse-body-dict">
       <h4 class="panel-title">
@@ -211,6 +193,25 @@
         <ul class="nav nav-list">
 		  <li><a href="${tenantPrefix}/plm/index.do"><i class="glyphicon glyphicon-list"></i> 项目</a></li>
 		  <li><a href="${tenantPrefix}/plm/plm-project-list.do"><i class="glyphicon glyphicon-list"></i> 产品管理</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="collapse-header-report" data-toggle="collapse" data-parent="#accordion" href="#collapse-body-report" aria-expanded="true" aria-controls="collapse-body-report">
+      <h4 class="panel-title">
+	    <i class="glyphicon glyphicon-list"></i>
+        报表管理
+      </h4>
+    </div>
+    <div id="collapse-body-report" class="panel-collapse collapse ${currentMenu == 'report' ? 'in' : ''}" role="tabpanel" aria-labelledby="collapse-header-report">
+      <div class="panel-body">
+        <ul class="nav nav-list">
+		  <li><a href="${tenantPrefix}/report/report-subject-list.do"><i class="glyphicon glyphicon-list"></i> 报表主题</a></li>
+		  <li><a href="${tenantPrefix}/report/report-query-list.do"><i class="glyphicon glyphicon-list"></i> 报表查询</a></li>
+		  <li><a href="${tenantPrefix}/report/report-dim-list.do"><i class="glyphicon glyphicon-list"></i> 报表维度</a></li>
+		  <li><a href="${tenantPrefix}/report/report-info-list.do"><i class="glyphicon glyphicon-list"></i> 报表信息</a></li>
         </ul>
       </div>
     </div>

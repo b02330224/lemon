@@ -103,10 +103,9 @@ public class RestFilter implements Filter {
             String key = text.substring(0, index);
             String value = text.substring(index + 1);
 
-            if (value != null) {
-                value = URLDecoder.decode(value, "UTF-8");
-            }
-
+            // if (value != null) {
+            // value = URLDecoder.decode(value, "UTF-8");
+            // }
             parameters.put(key, value);
         }
 
@@ -269,7 +268,7 @@ public class RestFilter implements Filter {
             Object result = method.invoke(object, arguments.toArray());
 
             if (result == null) {
-				logger.debug("return null");
+                logger.debug("return null");
             } else if (result instanceof String) {
                 response.setContentType(MediaType.TEXT_HTML);
                 response.getOutputStream().write(

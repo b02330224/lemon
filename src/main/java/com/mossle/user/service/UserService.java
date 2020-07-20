@@ -37,6 +37,13 @@ public class UserService {
 
     /**
      * 添加用户.
+     * 
+     * @param userBase
+     *            UserBase
+     * @param userRepoId
+     *            Long
+     * @param parameters
+     *            Map
      */
     public void insertUser(UserBase userBase, Long userRepoId,
             Map<String, Object> parameters) {
@@ -96,6 +103,13 @@ public class UserService {
 
     /**
      * 更新用户.
+     * 
+     * @param userBase
+     *            UserBase
+     * @param userRepoId
+     *            Long
+     * @param parameters
+     *            Map
      */
     public void updateUser(UserBase userBase, Long userRepoId,
             Map<String, Object> parameters) {
@@ -159,6 +173,9 @@ public class UserService {
 
     /**
      * 删除用户.
+     * 
+     * @param userBase
+     *            UserBase
      */
     public void removeUser(UserBase userBase) {
         userBaseManager.removeAll(userBase.getUserAttrs());

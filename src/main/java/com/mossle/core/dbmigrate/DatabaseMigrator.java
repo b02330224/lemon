@@ -30,6 +30,8 @@ public class DatabaseMigrator implements ApplicationContextAware {
             return;
         }
 
+        long startTime = System.currentTimeMillis();
+
         if (clean) {
             logger.info("clean database");
 
@@ -50,14 +52,26 @@ public class DatabaseMigrator implements ApplicationContextAware {
                 continue;
             }
 
-            this.doMigrate(moduleSpecification.getSchemaTable(),
-                    moduleSpecification.getSchemaLocation());
+            String schemaTable = moduleSpecification.getSchemaTable();
+
+            if (schemaTable.length() > 30) {
+                logger.warn("table name cannot larger then 30 : {} {}",
+                        schemaTable.length(), schemaTable);
+
+                continue;
+            }
+
+            this.doMigrate(schemaTable, moduleSpecification.getSchemaLocation());
 
             if (moduleSpecification.isInitData()) {
                 this.doMigrate(moduleSpecification.getDataTable(),
                         moduleSpecification.getDataLocation());
             }
         }
+
+        long endTime = System.currentTimeMillis();
+
+        logger.info("dbmigrate cost : {} ms", (endTime - startTime));
     }
 
     public void doMigrate(String table, String location) {

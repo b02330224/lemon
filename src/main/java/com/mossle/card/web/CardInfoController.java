@@ -1,5 +1,6 @@
 package com.mossle.card.web;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +13,9 @@ import com.mossle.api.tenant.TenantHolder;
 import com.mossle.api.user.UserConnector;
 
 import com.mossle.card.persistence.domain.CardInfo;
+import com.mossle.card.persistence.domain.DoorInfo;
 import com.mossle.card.persistence.manager.CardInfoManager;
+import com.mossle.card.persistence.manager.DoorInfoManager;
 
 import com.mossle.core.export.Exportor;
 import com.mossle.core.export.TableModel;
@@ -34,6 +37,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @RequestMapping("card")
 public class CardInfoController {
     private CardInfoManager cardInfoManager;
+    private DoorInfoManager doorInfoManager;
     private Exportor exportor;
     private BeanMapper beanMapper = new BeanMapper();
     private UserConnector userConnector;
@@ -123,10 +127,53 @@ public class CardInfoController {
         exportor.export(request, response, tableModel);
     }
 
+    @RequestMapping("card-info-door-input")
+    public String cardInfoDoorInput(@RequestParam("id") Long id, Model model) {
+        CardInfo cardInfo = cardInfoManager.get(id);
+        model.addAttribute("cardInfo", cardInfo);
+
+        List<DoorInfo> doorInfos = doorInfoManager.getAll();
+        model.addAttribute("doorInfos", doorInfos);
+
+        List<Long> ids = new ArrayList<Long>();
+
+        for (DoorInfo doorInfo : cardInfo.getDoorInfos()) {
+            ids.add(doorInfo.getId());
+        }
+
+        model.addAttribute("ids", ids);
+
+        return "card/card-info-door-input";
+    }
+
+    @RequestMapping("card-info-door-save")
+    public String cardInfoDoorSave(
+            @RequestParam("cardId") Long cardId,
+            @RequestParam(value = "doorIds", required = false) List<Long> doorIds) {
+        CardInfo cardInfo = cardInfoManager.get(cardId);
+        cardInfo.getDoorInfos().clear();
+        cardInfoManager.save(cardInfo);
+
+        if (doorIds != null) {
+            for (Long doorId : doorIds) {
+                DoorInfo doorInfo = doorInfoManager.get(doorId);
+                cardInfo.getDoorInfos().add(doorInfo);
+                cardInfoManager.save(cardInfo);
+            }
+        }
+
+        return "redirect:/card/card-info-door-input.do?id=" + cardId;
+    }
+
     // ~ ======================================================================
     @Resource
     public void setCardInfoManager(CardInfoManager cardInfoManager) {
         this.cardInfoManager = cardInfoManager;
+    }
+
+    @Resource
+    public void setDoorInfoManager(DoorInfoManager doorInfoManager) {
+        this.doorInfoManager = doorInfoManager;
     }
 
     @Resource

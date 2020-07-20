@@ -46,22 +46,40 @@ $(function() {
   <input id="card-info_id" type="hidden" name="id" value="${model.id}">
   </c:if>
   <div class="form-group">
+    <label class="control-label col-md-1" for="card-info_address">类型</label>
+	<div class="col-sm-5">
+	  <input id="card-info_address" type="text" name="type" value="${model.type}" size="40" class="form-control required" minlength="2" maxlength="10">
+    </div>
+  </div>
+  <div class="form-group">
     <label class="control-label col-md-1" for="card-info_address">卡号</label>
 	<div class="col-sm-5">
 	  <input id="card-info_address" type="text" name="code" value="${model.code}" size="40" class="form-control required" minlength="2" maxlength="10">
     </div>
   </div>
   <div class="form-group">
-    <label class="control-label col-md-1" for="card-info_description">备注</label>
+    <label class="control-label col-md-1" for="card-info_address">用户</label>
 	<div class="col-sm-5">
-	  <input id="card-info_description" type="text" name="description" value="${model.description}" size="40" class="text">
+	  <input id="card-info_address" type="text" name="userId" value="${model.userId}" size="40" class="form-control required" minlength="2" maxlength="10">
     </div>
   </div>
   <div class="form-group">
-    <div class="col-sm-5">
-      <button type="submit" class="btn a-submit"><spring:message code='core.input.save' text='保存'/></button>
+    <label class="control-label col-md-1" for="card-info_address">状态</label>
+	<div class="col-sm-5">
+	  <input id="card-info_address" type="text" name="status" value="${model.status}" size="40" class="form-control required" minlength="2" maxlength="10">
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="control-label col-md-1" for="card-info_description">备注</label>
+	<div class="col-sm-5">
+	  <textarea id="card-info_description" name="description" class="form-control">${model.description}</textarea>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-5 col-md-offset-1">
+      <button type="submit" class="btn btn-default a-submit"><spring:message code='core.input.save' text='保存'/></button>
 	  &nbsp;
-      <button type="button" class="btn a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
+      <button type="button" class="btn btn-link a-cancel" onclick="history.back();"><spring:message code='core.input.back' text='返回'/></button>
     </div>
   </div>
 </form>
